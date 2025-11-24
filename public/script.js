@@ -33,6 +33,7 @@ const searchTMDB = async (q) => {
         const json = await resp.json()
         const results = json.results || []
         suggestions.innerHTML = ''
+        if (results.length) suggestions.style.display = 'block'
         results.forEach(r => {
             const li = document.createElement('li')
             li.tabIndex = 0
@@ -44,6 +45,7 @@ const searchTMDB = async (q) => {
             li.addEventListener('keydown', (e) => { if (e.key === 'Enter') selectSuggestion(r) })
             suggestions.appendChild(li)
         })
+        if (!results.length) suggestions.style.display = 'none'
     } catch (err) {
         console.error('TMDB search failed', err)
     }
@@ -64,7 +66,16 @@ const selectSuggestion = (r) => {
         posterPreview.style.display = 'none'
     }
     suggestions.innerHTML = ''
+    suggestions.style.display = 'none'
 }
+
+// Hide suggestions whenever user clicks outside the input/suggestions
+document.addEventListener('click', (e) => {
+    if (!titleInput.contains(e.target) && !suggestions.contains(e.target)) {
+        suggestions.innerHTML = ''
+        suggestions.style.display = 'none'
+    }
+})
 
 // listen for form submissions  
 myForm.addEventListener('submit', async (event) => {
