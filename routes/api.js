@@ -23,7 +23,7 @@ router.post('/data', async (req, res) => {
         // require rating and watchedDate
         if (rating == null) return res.status(400).send({ error: 'rating is required' })
         const r = Number(rating)
-        if (!Number.isInteger(r) || r < 1 || r > 5) return res.status(400).send({ error: 'rating must be an integer between 1 and 5' })
+        if (isNaN(r) || r < 0.5 || r > 5 || (r * 2) % 1 !== 0) return res.status(400).send({ error: 'rating must be a number between 0.5 and 5 in 0.5 steps' })
         if (!watchedDate) return res.status(400).send({ error: 'watchedDate is required' })
 
         const data = {

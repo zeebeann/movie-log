@@ -256,17 +256,24 @@ const getData = async () => {
                 const grid = document.createElement('div')
                 grid.className = 'movie-list'
 
-                // helper: build display stars HTML from numeric rating
+                // helper: build display stars HTML from numeric rating (supports half-stars)
                 const buildStarsHtml = (rating) => {
                     if (rating == null) return '<span>—</span>'
                     const val = Number(rating)
                     if (isNaN(val)) return '<span>—</span>'
-                    // if rating was in 0-10 scale, map to 1-5
-                    let stars = val > 5 ? Math.round((val / 10) * 5) : Math.round(val)
-                    stars = Math.max(0, Math.min(5, stars))
+                    // normalize: if rating was on 0-10 scale convert to 0.5-5.0
+                    let norm = val > 5 ? (val / 10) * 5 : val
+                    // round to nearest 0.5 and clamp
+                    norm = Math.max(0.5, Math.min(5, Math.round(norm * 2) / 2))
                     let s = ''
-                    for (let i=1; i<=5; i++) {
-                        s += `<span class="star ${i <= stars ? 'filled' : ''}">★</span>`
+                    for (let i = 1; i <= 5; i++) {
+                        if (norm >= i) {
+                            s += `<span class="star filled">★</span>`
+                        } else if (norm >= i - 0.5) {
+                            s += `<span class="star half">★</span>`
+                        } else {
+                            s += `<span class="star">★</span>`
+                        }
                     }
                     return `<span class="display-stars">${s}</span>`
                 }

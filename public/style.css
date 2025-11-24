@@ -26,9 +26,7 @@ h2 img {
     width: 2rem;
 }
 
-p {
-    /* font-size: 1.25rem; */
-}
+/* paragraph defaults handled by body font settings */
 
 nav {
     display: grid;
@@ -263,16 +261,43 @@ option {
 
 .rating-stars label {
     cursor: pointer;
-    color: #bbb;
+    /* hide the label text glyph: we render with pseudo-elements so we can control half/full fills */
+    color: transparent;
     transition: color 160ms ease;
     user-select: none;
 }
 
 /* hover + checked states */
-.rating-stars label:hover,
-.rating-stars label:hover ~ label,
-.rating-stars input[type="radio"]:checked ~ label {
-    color: #f5b50a; /* gold */
+.rating-stars label::after {
+    /* base (gray) star */
+    content: '★';
+    color: #bbb;
+    position: relative;
+    display: inline-block;
+}
+.rating-stars label::before {
+    /* gold overlay star which we size to show full/half fills */
+    content: '★';
+    color: #f5b50a;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0%;
+    overflow: hidden;
+}
+
+/* hover + checked states (full star overlay) */
+.rating-stars label:hover::before,
+.rating-stars label:hover ~ label::before,
+.rating-stars input[type="radio"]:checked ~ label::before {
+    width: 100%;
+}
+
+/* half-step labels should only fill their star by 50% */
+.rating-stars label.half:hover::before,
+.rating-stars label.half:hover ~ label.half::before,
+.rating-stars input[type="radio"]:checked ~ label.half::before {
+    width: 50%;
 }
 
 .rating-stars label:active { transform: scale(0.95); }
@@ -284,10 +309,15 @@ option {
     align-items: center;
 }
 .display-stars .star {
-    color: #ddd;
+    position: relative;
+    color: transparent; /* hide base; use pseudo elements for half/full fills */
     font-size: 1rem;
+    display: inline-block;
 }
-.display-stars .star.filled { color: #f5b50a; }
+.display-stars .star::after { content: '★'; color: #ddd; }
+.display-stars .star::before { content: '★'; color: #f5b50a; position: absolute; left: 0; top: 0; width: 0; overflow: hidden; }
+.display-stars .star.filled::before { width: 100%; }
+.display-stars .star.half::before { width: 50%; }
 
 /* Poster preview on the form */
 .poster-wrap {
