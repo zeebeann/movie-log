@@ -50,7 +50,9 @@ const searchTMDB = async (q) => {
             li.className = 'suggestion'
             li.dataset.id = r.id
             li.dataset.poster = r.posterUrl || ''
-            li.textContent = `${r.title} ${r.release_date ? '(' + r.release_date.split('-')[0] + ')' : ''}`
+            // add a small poster thumbnail in the suggestion where available
+            const thumb = r.posterUrl ? `<img src="${r.posterUrl}" alt="thumb" />` : ''
+            li.innerHTML = `${thumb}<div class="suggestion-meta">${r.title} ${r.release_date ? '(' + r.release_date.split('-')[0] + ')' : ''}</div>`
             li.addEventListener('click', () => selectSuggestion(r))
             li.addEventListener('keydown', (e) => { if (e.key === 'Enter') selectSuggestion(r) })
             suggestions.appendChild(li)
@@ -222,28 +224,32 @@ const getData = async () => {
             contentArea.innerHTML = '<p><i>No movies logged yet.</i></p>'
             return
         }
-        const header = document.createElement('h2')
-        header.textContent = '🎬 Logged Movies'
-        contentArea.appendChild(header)
+                const header = document.createElement('h2')
+                header.textContent = '🎬 Logged Movies'
+                contentArea.appendChild(header)
 
-        data.forEach(item => {
-            const div = document.createElement('div')
-            div.className = 'movie-item'
-            const poster = item.posterUrl ? `<img class="thumb" src="${item.posterUrl}" alt="poster" />` : ''
-            const watched = item.watchedDate ? new Date(item.watchedDate).toLocaleDateString() : 'Unknown'
-            const rating = item.rating != null ? item.rating : '—'
-            div.innerHTML = `
-                <div class="movie-row">
-                  ${poster}
-                  <div class="movie-meta">
-                    <h3>${item.title}</h3>
-                    <p>Rating: ${rating}</p>
-                    <p>Watched: ${watched}</p>
-                  </div>
-                </div>
-            `
-            contentArea.appendChild(div)
-        })
+                // create a responsive grid container for movie cards
+                const grid = document.createElement('div')
+                grid.className = 'movie-list'
+
+                data.forEach(item => {
+                        const div = document.createElement('div')
+                        div.className = 'movie-item'
+                        const poster = item.posterUrl ? `<img class="thumb" src="${item.posterUrl}" alt="poster" />` : ''
+                        const watched = item.watchedDate ? new Date(item.watchedDate).toLocaleDateString() : 'Unknown'
+                        const rating = item.rating != null ? item.rating : '—'
+                        div.innerHTML = `
+                                ${poster}
+                                <div class="movie-meta">
+                                    <h3>${item.title}</h3>
+                                    <p>Rating: ${rating}</p>
+                                    <p>Watched: ${watched}</p>
+                                </div>
+                        `
+                        grid.appendChild(div)
+                })
+
+                contentArea.appendChild(grid)
     } catch (err) {
         console.error('Failed to fetch movies', err)
         notReadyStatus.style.display = 'block'

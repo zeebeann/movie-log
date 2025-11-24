@@ -81,17 +81,19 @@
     <form id="myForm">
       <fieldset>
         <label for="title">Movie Title</label>
-        <input
-          required
-          type="text"
-          name="title"
-          id="title"
-          placeholder="e.g. The Matrix"
-          autocomplete="off"
-        />
-        <small class="validation">Title is required</small>
-        <small id="searchStatus" class="search-status" aria-live="polite"></small>
-        <ul id="suggestions" class="suggestions" aria-label="Search suggestions"></ul>
+        <div class="autocomplete">
+          <input
+            required
+            type="text"
+            name="title"
+            id="title"
+            placeholder="e.g. The Matrix"
+            autocomplete="off"
+          />
+          <small class="validation">Title is required</small>
+          <small id="searchStatus" class="search-status" aria-live="polite"></small>
+          <ul id="suggestions" class="suggestions" aria-label="Search suggestions"></ul>
+        </div>
       </fieldset>
 
       <fieldset>
@@ -137,17 +139,8 @@
   <section id="content">
   </section>
 
-  <section>
-    <h3>Learning Prompts</h3>
-    <p>Can you add a connection string to the NodeJS environment (e.g. .env file) for your own MongoDB Atlas Cluster?
-    </p>
-    <p>Use MongoDB Compass to verify that your data collection form is working. </p>
-    <p>Looking ahead: in the future we will build a full CRUD implementation. Can you envision how we might add features
-      for Updating and deleting individual records?</p>
-  </section>
-
   <footer>
-    Created by <a href="https://nsitu.ca">Harold Sikkema</a> in the context of
+    Created by <a href="https://github.com/zeebeann">Zainab Ilyas</a> for
     Systems Design in the Interaction Design program at Sheridan College.
   </footer>
 
