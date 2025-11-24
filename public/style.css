@@ -261,8 +261,12 @@ option {
 
 .rating-stars label {
     cursor: pointer;
-    /* hide the label text glyph: we render with pseudo-elements so we can control half/full fills */
-    color: transparent;
+    /* display as overlapping halves so pairs of labels form one visible star */
+    display: inline-block;
+    width: 1.4rem;           /* width per half-star */
+    margin-left: -0.6rem;    /* overlap halves so two halves become one star */
+    position: relative;
+    color: transparent; /* hide original glyph, we use pseudo elements */
     transition: color 160ms ease;
     user-select: none;
 }
