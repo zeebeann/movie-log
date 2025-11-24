@@ -216,6 +216,18 @@ option {
     background: #f3f7f3;
 }
 
+#suggestions li.suggestion.focused {
+    background: #e8f0e8;
+}
+
+.search-status {
+    display: block;
+    color: #444;
+    font-size: 0.9rem;
+    height: 1.1rem;
+    margin-top: 0.25rem;
+}
+
 /* Poster preview on the form */
 .poster-wrap {
     width: 160px;

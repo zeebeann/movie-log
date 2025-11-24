@@ -6,6 +6,7 @@ let contentArea = document.querySelector('#content')
 // movie-specific elements
 let titleInput = document.querySelector('#title')
 let suggestions = document.querySelector('#suggestions')
+let searchStatus = document.querySelector('#searchStatus')
 let posterPreview = document.querySelector('#posterPreview')
 let posterUrlInput = document.querySelector('#posterUrl')
 let externalIdInput = document.querySelector('#externalId')
@@ -25,11 +26,20 @@ const debounce = (fn, wait = 250) => {
 const searchTMDB = async (q) => {
     if (!q || q.trim().length === 0) {
         suggestions.innerHTML = ''
+        suggestions.style.display = 'none'
+        if (searchStatus) searchStatus.textContent = ''
         return
     }
     try {
+        if (searchStatus) searchStatus.textContent = 'Searching…'
         const resp = await fetch(`/tmdb/search?q=${encodeURIComponent(q)}`)
-        if (!resp.ok) return
+        if (!resp.ok) {
+            const txt = await resp.text().catch(() => '')
+            if (searchStatus) searchStatus.textContent = 'Search failed'
+            console.error('tmdb search not ok', resp.status, txt)
+            suggestions.style.display = 'none'
+            return
+        }
         const json = await resp.json()
         const results = json.results || []
         suggestions.innerHTML = ''
@@ -45,7 +55,12 @@ const searchTMDB = async (q) => {
             li.addEventListener('keydown', (e) => { if (e.key === 'Enter') selectSuggestion(r) })
             suggestions.appendChild(li)
         })
-        if (!results.length) suggestions.style.display = 'none'
+        if (!results.length) {
+            suggestions.style.display = 'none'
+            if (searchStatus) searchStatus.textContent = 'No matches'
+        } else {
+            if (searchStatus) searchStatus.textContent = ''
+        }
     } catch (err) {
         console.error('TMDB search failed', err)
     }
@@ -68,6 +83,52 @@ const selectSuggestion = (r) => {
     suggestions.innerHTML = ''
     suggestions.style.display = 'none'
 }
+
+// keyboard navigation for suggestions
+let currentIndex = -1
+const focusSuggestion = (i) => {
+    const items = suggestions.querySelectorAll('li.suggestion')
+    if (!items || items.length === 0) return
+    if (i < 0) i = -1
+    currentIndex = i
+    items.forEach((it, idx) => {
+        if (idx === i) {
+            it.classList.add('focused')
+            it.focus()
+        } else {
+            it.classList.remove('focused')
+        }
+    })
+}
+
+titleInput.addEventListener('keydown', (e) => {
+    const items = suggestions.querySelectorAll('li.suggestion')
+    if (!items || items.length === 0) return
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        currentIndex = Math.min(currentIndex + 1, items.length - 1)
+        focusSuggestion(currentIndex)
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        currentIndex = Math.max(currentIndex - 1, -1)
+        if (currentIndex === -1) titleInput.focus()
+        else focusSuggestion(currentIndex)
+    } else if (e.key === 'Enter') {
+        // On enter, if there's a focused suggestion use it
+        if (currentIndex >= 0 && items[currentIndex]) {
+            e.preventDefault()
+            const idx = currentIndex
+            const text = items[idx].textContent
+            const r = {
+                id: items[idx].dataset.id,
+                posterUrl: items[idx].dataset.poster,
+                title: text
+            }
+            selectSuggestion(r)
+        }
+    }
+})
 
 // Hide suggestions whenever user clicks outside the input/suggestions
 document.addEventListener('click', (e) => {
