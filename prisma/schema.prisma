@@ -10,7 +10,7 @@ datasource db {
 model Movie {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
-  rating      Float   // user rating on a 0.5-5.0 scale
+  rating      Int     // user rating on a 1-5 integer scale
   watchedDate DateTime @db.Date
   posterUrl   String?  // URL returned from autofill API
   externalId  String?  // optional external movie id (IMDB/TMDB)
