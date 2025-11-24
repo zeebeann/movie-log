@@ -20,11 +20,16 @@ router.post('/data', async (req, res) => {
     try {
         const { title, rating, watchedDate, posterUrl, externalId } = req.body
         if (!title) return res.status(400).send({ error: 'title is required' })
+        // require rating and watchedDate
+        if (rating == null) return res.status(400).send({ error: 'rating is required' })
+        const r = Number(rating)
+        if (!Number.isInteger(r) || r < 1 || r > 5) return res.status(400).send({ error: 'rating must be an integer between 1 and 5' })
+        if (!watchedDate) return res.status(400).send({ error: 'watchedDate is required' })
 
         const data = {
             title,
-            rating: rating != null ? Number(rating) : undefined,
-            watchedDate: watchedDate ? new Date(watchedDate) : new Date(),
+            rating: r,
+            watchedDate: new Date(watchedDate),
             posterUrl,
             externalId
         }

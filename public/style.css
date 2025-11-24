@@ -247,6 +247,48 @@ option {
 /* container for absolute overlaying suggestions */
 .autocomplete { position: relative; width: 100%; }
 
+/* star rating */
+.rating-stars {
+    display: inline-flex;
+    gap: 0.25rem;
+    align-items: center;
+    justify-content: flex-start;
+    direction: rtl; /* makes CSS selection easier so we can use sibling selectors */
+    font-size: 1.8rem;
+}
+
+.rating-stars input[type="radio"] {
+    display: none; /* hide native radios */
+}
+
+.rating-stars label {
+    cursor: pointer;
+    color: #bbb;
+    transition: color 160ms ease;
+    user-select: none;
+}
+
+/* hover + checked states */
+.rating-stars label:hover,
+.rating-stars label:hover ~ label,
+.rating-stars input[type="radio"]:checked ~ label {
+    color: #f5b50a; /* gold */
+}
+
+.rating-stars label:active { transform: scale(0.95); }
+
+/* display-only stars for movie cards */
+.display-stars {
+    display: inline-flex;
+    gap: 0.15rem;
+    align-items: center;
+}
+.display-stars .star {
+    color: #ddd;
+    font-size: 1rem;
+}
+.display-stars .star.filled { color: #f5b50a; }
+
 /* Poster preview on the form */
 .poster-wrap {
     width: 160px;

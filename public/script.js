@@ -10,8 +10,11 @@ let searchStatus = document.querySelector('#searchStatus')
 let posterPreview = document.querySelector('#posterPreview')
 let posterUrlInput = document.querySelector('#posterUrl')
 let externalIdInput = document.querySelector('#externalId')
-let ratingInput = document.querySelector('#rating')
+// star rating radios
+let ratingRadios = Array.from(document.querySelectorAll('input[name="rating"]'))
 let watchedDateInput = document.querySelector('#watchedDate')
+let ratingValidation = document.querySelector('#ratingValidation')
+let watchedValidation = document.querySelector('#watchedValidation')
 
 // Debounce helper
 const debounce = (fn, wait = 250) => {
@@ -147,12 +150,28 @@ myForm.addEventListener('submit', async (event) => {
         myForm.reset()
         posterPreview.src = ''
         suggestions.innerHTML = ''
+        if (ratingValidation) ratingValidation.style.display = 'none'
+        if (watchedValidation) watchedValidation.style.display = 'none'
         return
     }
 
+    // client-side validation
     if (!titleInput.value || titleInput.value.trim() === '') {
         alert('Title is required')
         return
+    }
+    const selRadio = document.querySelector('input[name="rating"]:checked')
+    if (!selRadio) {
+        if (ratingValidation) ratingValidation.style.display = 'block'
+        return
+    } else {
+        if (ratingValidation) ratingValidation.style.display = 'none'
+    }
+    if (!watchedDateInput.value || watchedDateInput.value.trim() === '') {
+        if (watchedValidation) watchedValidation.style.display = 'block'
+        return
+    } else {
+        if (watchedValidation) watchedValidation.style.display = 'none'
     }
 
     // If the user didn't pick a suggestion, try to fetch the first TMDB result
@@ -176,9 +195,10 @@ myForm.addEventListener('submit', async (event) => {
         }
     }
 
+    const sel = document.querySelector('input[name="rating"]:checked')
     const payload = {
         title: titleInput.value.trim(),
-        rating: ratingInput.value ? Number(ratingInput.value) : null,
+        rating: sel ? Number(sel.value) : null,
         watchedDate: watchedDateInput.value ? new Date(watchedDateInput.value).toISOString() : null,
         posterUrl: posterUrlInput.value || null,
         externalId: externalIdInput.value || null
@@ -200,6 +220,10 @@ myForm.addEventListener('submit', async (event) => {
         console.log('Saved', result)
         alert('Movie saved')
         myForm.reset()
+        // ensure radio buttons are cleared after reset
+        ratingRadios.forEach(r => r.checked = false)
+        if (ratingValidation) ratingValidation.style.display = 'none'
+        if (watchedValidation) watchedValidation.style.display = 'none'
         posterPreview.src = ''
         getData()
     } catch (err) {
@@ -232,19 +256,34 @@ const getData = async () => {
                 const grid = document.createElement('div')
                 grid.className = 'movie-list'
 
+                // helper: build display stars HTML from numeric rating
+                const buildStarsHtml = (rating) => {
+                    if (rating == null) return '<span>—</span>'
+                    const val = Number(rating)
+                    if (isNaN(val)) return '<span>—</span>'
+                    // if rating was in 0-10 scale, map to 1-5
+                    let stars = val > 5 ? Math.round((val / 10) * 5) : Math.round(val)
+                    stars = Math.max(0, Math.min(5, stars))
+                    let s = ''
+                    for (let i=1; i<=5; i++) {
+                        s += `<span class="star ${i <= stars ? 'filled' : ''}">★</span>`
+                    }
+                    return `<span class="display-stars">${s}</span>`
+                }
+
                 data.forEach(item => {
                         const div = document.createElement('div')
                         div.className = 'movie-item'
                         const poster = item.posterUrl ? `<img class="thumb" src="${item.posterUrl}" alt="poster" />` : ''
-                        const watched = item.watchedDate ? new Date(item.watchedDate).toLocaleDateString() : 'Unknown'
-                        const rating = item.rating != null ? item.rating : '—'
+                    const watched = item.watchedDate ? new Date(item.watchedDate).toLocaleDateString() : 'Unknown'
+                    const rating = item.rating != null ? item.rating : null
                         div.innerHTML = `
-                                ${poster}
-                                <div class="movie-meta">
-                                    <h3>${item.title}</h3>
-                                    <p>Rating: ${rating}</p>
-                                    <p>Watched: ${watched}</p>
-                                </div>
+                        ${poster}
+                        <div class="movie-meta">
+                          <h3>${item.title}</h3>
+                          <p>Rating: ${buildStarsHtml(rating)} ${rating != null ? `<span style="color:#333; font-size:0.95rem; margin-left:0.5rem">${rating}</span>` : ''}</p>
+                          <p>Watched: ${watched}</p>
+                        </div>
                         `
                         grid.appendChild(div)
                 })
