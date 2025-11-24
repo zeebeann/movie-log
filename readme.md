@@ -17,11 +17,26 @@ This [NodeJS](https://nodejs.org/en) App uses [Express](https://www.npmjs.com/pa
 ## Setup
 - Run `npm install` to install express and prisma. 
 - Add your MongoDB connection string to the `.env` file (see `.env.example` for an example). 
+ - Add your MongoDB connection string to the `.env` file (see `.env.example` for an example). 
+ - Add a TheMovieDB read token (TMDB_BEARER) to `.env` for the TMDB proxy endpoints to work. You can create a read access token in your TMDB account (Settings → API → Read access token). Do not commit this token to source control.
 - Be sure to include the name of the Database you want to connect to. For example, if your connection string is `mongodb+srv://username:password@cluster.abc.mongodb.net/MyDatabase`, you would change `MyDatabase` to any database name of your choosing.
 - If you point to an existing database, you may wish to introspect the schema using the command `npx prisma db pull --force`. 
 - Alternately, you can start with a blank database, by pointing the connection string to a Database that doesn't exist yet (Mongo creates it automatically as soon as you refer to it).
 - Run `npx prisma generate` to create the Prisma Client based on `schema.prisma`.
 - Run `npm run start` to lauch the app.
+
+## TMDB autocomplete (local / deployment)
+
+This project uses server-side proxy endpoints to talk to TheMovieDB so the frontend does not need your secret token.
+
+1. Locally, create a `.env` file (copy `.env.example`) and set `TMDB_BEARER` to the read access token from your TMDB account.
+2. If deploying to Vercel, add `TMDB_BEARER` in the Vercel Project > Settings > Environment Variables (do not commit the token).
+
+Example `.env` (local):
+```
+DATABASE_URL="mongodb+srv://..."
+TMDB_BEARER="eyJhbGciOi..."
+```
 
 ## Iteration
 A typical iteration pattern here would be as follows:
