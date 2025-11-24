@@ -4,7 +4,7 @@ import express from 'express'
 const router = express.Router()
 
 // Set this to match the model name in your Prisma schema
-const model = 'cats'
+const model = 'movie'
 
 // Prisma lets NodeJS communicate with MongoDB
 // Let's import and initialize the Prisma client
@@ -18,9 +18,18 @@ const prisma = new PrismaClient()
 // This is the 'C' of CRUD
 router.post('/data', async (req, res) => {
     try {
-        const created = await prisma[model].create({
-            data: req.body
-        })
+        const { title, rating, watchedDate, posterUrl, externalId } = req.body
+        if (!title) return res.status(400).send({ error: 'title is required' })
+
+        const data = {
+            title,
+            rating: rating != null ? Number(rating) : undefined,
+            watchedDate: watchedDate ? new Date(watchedDate) : new Date(),
+            posterUrl,
+            externalId
+        }
+
+        const created = await prisma[model].create({ data })
         res.status(201).send(created)
     } catch (err) {
         console.error('POST /data error:', err)
@@ -32,9 +41,10 @@ router.post('/data', async (req, res) => {
 // ----- READ (GET) list ----- 
 router.get('/data', async (req, res) => {
     try {
-        // fetch first 100 records from the database with no filter
+        // fetch first 100 movie records, newest watched first
         const result = await prisma[model].findMany({
-            take: 100
+            take: 100,
+            orderBy: { watchedDate: 'desc' }
         })
         res.send(result)
     } catch (err) {
@@ -46,7 +56,7 @@ router.get('/data', async (req, res) => {
 
 
 // ----- findMany() with search ------- 
-// Accepts optional search parameter to filter by name field
+// Accepts optional search parameter to filter by title field
 // See also: https://www.prisma.io/docs/orm/reference/prisma-client-reference#examples-7
 router.get('/search', async (req, res) => {
     try {
@@ -55,18 +65,85 @@ router.get('/search', async (req, res) => {
         // fetch the records from the database
         const result = await prisma[model].findMany({
             where: {
-                name: {
+                title: {
                     contains: searchTerms,
                     mode: 'insensitive'  // case-insensitive search
                 }
             },
-            orderBy: { name: 'asc' },
+            orderBy: { title: 'asc' },
             take: 10
         })
         res.send(result)
     } catch (err) {
         console.error('GET /search error:', err)
         res.status(500).send({ error: 'Search failed', details: err.message || err })
+    }
+})
+
+
+// ---------- TMDB proxy endpoints ----------
+// These endpoints proxy requests to TheMovieDB so the frontend doesn't need
+// to hold the TMDB bearer token. Set `TMDB_BEARER` in your environment.
+const TMDB_BASE = 'https://api.themoviedb.org/3'
+const TMDB_BEARER = process.env.TMDB_BEARER
+
+// /api/tmdb/search?q=matrix  -> searches by query
+// if `q` is omitted, falls back to discover/popular
+router.get('/tmdb/search', async (req, res) => {
+    try {
+        if (!TMDB_BEARER) return res.status(500).send({ error: 'TMDB_BEARER environment variable not set' })
+        const q = req.query.q
+        const url = q
+            ? `${TMDB_BASE}/search/movie?query=${encodeURIComponent(q)}&language=en-US&page=1&include_adult=false`
+            : `${TMDB_BASE}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`
+
+        const resp = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${TMDB_BEARER}`,
+                accept: 'application/json'
+            }
+        })
+        const json = await resp.json()
+        if (json.results && Array.isArray(json.results)) {
+            json.results = json.results.map(r => ({
+                id: r.id,
+                title: r.title,
+                overview: r.overview,
+                release_date: r.release_date,
+                posterUrl: r.poster_path ? `https://image.tmdb.org/t/p/w500${r.poster_path}` : null
+            }))
+        }
+        res.send(json)
+    } catch (err) {
+        console.error('GET /tmdb/search error:', err)
+        res.status(500).send({ error: 'TMDB proxy failed', details: err.message || err })
+    }
+})
+
+// /api/tmdb/movie/:id -> fetch movie details by TMDB id
+router.get('/tmdb/movie/:id', async (req, res) => {
+    try {
+        if (!TMDB_BEARER) return res.status(500).send({ error: 'TMDB_BEARER environment variable not set' })
+        const id = req.params.id
+        const url = `${TMDB_BASE}/movie/${encodeURIComponent(id)}?language=en-US`
+        const resp = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${TMDB_BEARER}`,
+                accept: 'application/json'
+            }
+        })
+        const json = await resp.json()
+        const result = {
+            id: json.id,
+            title: json.title,
+            overview: json.overview,
+            release_date: json.release_date,
+            posterUrl: json.poster_path ? `https://image.tmdb.org/t/p/w500${json.poster_path}` : null
+        }
+        res.send(result)
+    } catch (err) {
+        console.error('GET /tmdb/movie/:id error:', err)
+        res.status(500).send({ error: 'TMDB movie fetch failed', details: err.message || err })
     }
 })
 

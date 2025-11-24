@@ -8,23 +8,13 @@ datasource db {
 }
 
 model cats {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  adoptionDate   DateTime? @db.Date
-  birthDate      DateTime? @db.Date
-  breed          String?
-  declawed       Boolean?
-  description    String?
-  fosterDate     DateTime? @db.Date
-  fosterDuration Int?
-  location       String?
-  name           String?
-  neutered       Boolean?
-  sex            String?
-  primaryColor   String?
-  secondaryColor String?
-  playfulness    Int?
-  appetite       Int?
-  microchip      Int?
-  isAdopted      Boolean?
-  food           String?
+model Movie {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  rating      Float?   // user rating (e.g. 7.5 or 8)
+  watchedDate DateTime @db.Date
+  posterUrl   String?  // URL returned from autofill API
+  externalId  String?  // optional external movie id (IMDB/TMDB)
+  createdAt   DateTime @default(now()) @db.Date
+  updatedAt   DateTime @updatedAt @db.Date
 }

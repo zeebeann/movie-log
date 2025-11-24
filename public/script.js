@@ -3,146 +3,179 @@ let notReadyStatus = document.querySelector('#notReadyStatus')
 let myForm = document.querySelector('#myForm')
 let contentArea = document.querySelector('#content')
 
-// listen for form submissions  
-myForm.addEventListener('submit', event => {
-    // prevent the page from reloading when the form is submitted.
-    event.preventDefault();
-    // if the user clicked "reset", reset the form
-    if (event.submitter.className == "reset") {
-        myForm.reset()
-    }
-    // otherwise assume we need to save the data.
-    else {
+// movie-specific elements
+let titleInput = document.querySelector('#title')
+let suggestions = document.querySelector('#suggestions')
+let posterPreview = document.querySelector('#posterPreview')
+let posterUrlInput = document.querySelector('#posterUrl')
+let externalIdInput = document.querySelector('#externalId')
+let ratingInput = document.querySelector('#rating')
+let watchedDateInput = document.querySelector('#watchedDate')
 
-        // if textarea.validity is false, alert the user and stop processing.
-        if (!myForm.description.checkValidity()) {
-            alert('Please provide a description of at least 20 characters.')
+// Debounce helper
+const debounce = (fn, wait = 250) => {
+    let t
+    return (...args) => {
+        clearTimeout(t)
+        t = setTimeout(() => fn(...args), wait)
+    }
+}
+
+// TMDB search
+const searchTMDB = async (q) => {
+    if (!q || q.trim().length === 0) {
+        suggestions.innerHTML = ''
+        return
+    }
+    try {
+        const resp = await fetch(`/tmdb/search?q=${encodeURIComponent(q)}`)
+        if (!resp.ok) return
+        const json = await resp.json()
+        const results = json.results || []
+        suggestions.innerHTML = ''
+        results.forEach(r => {
+            const li = document.createElement('li')
+            li.tabIndex = 0
+            li.className = 'suggestion'
+            li.dataset.id = r.id
+            li.dataset.poster = r.posterUrl || ''
+            li.textContent = `${r.title} ${r.release_date ? '(' + r.release_date.split('-')[0] + ')' : ''}`
+            li.addEventListener('click', () => selectSuggestion(r))
+            li.addEventListener('keydown', (e) => { if (e.key === 'Enter') selectSuggestion(r) })
+            suggestions.appendChild(li)
+        })
+    } catch (err) {
+        console.error('TMDB search failed', err)
+    }
+}
+
+const debouncedSearch = debounce((e) => searchTMDB(e.target.value), 300)
+titleInput.addEventListener('input', debouncedSearch)
+
+const selectSuggestion = (r) => {
+    titleInput.value = r.title || ''
+    posterUrlInput.value = r.posterUrl || ''
+    externalIdInput.value = r.id || ''
+    if (r.posterUrl) {
+        posterPreview.src = r.posterUrl
+        posterPreview.style.display = 'block'
+    } else {
+        posterPreview.src = ''
+        posterPreview.style.display = 'none'
+    }
+    suggestions.innerHTML = ''
+}
+
+// listen for form submissions  
+myForm.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    if (event.submitter && event.submitter.className === 'reset') {
+        myForm.reset()
+        posterPreview.src = ''
+        suggestions.innerHTML = ''
+        return
+    }
+
+    if (!titleInput.value || titleInput.value.trim() === '') {
+        alert('Title is required')
+        return
+    }
+
+    // If the user didn't pick a suggestion, try to fetch the first TMDB result
+    if ((!posterUrlInput.value || posterUrlInput.value.trim() === '') && titleInput.value) {
+        try {
+            const s = await fetch(`/tmdb/search?q=${encodeURIComponent(titleInput.value.trim())}`)
+            if (s.ok) {
+                const js = await s.json()
+                const first = (js.results && js.results[0]) ? js.results[0] : null
+                if (first) {
+                    posterUrlInput.value = first.posterUrl || ''
+                    externalIdInput.value = first.id || ''
+                    if (first.posterUrl) {
+                        posterPreview.src = first.posterUrl
+                        posterPreview.style.display = 'block'
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('TMDB fallback failed', e)
+        }
+    }
+
+    const payload = {
+        title: titleInput.value.trim(),
+        rating: ratingInput.value ? Number(ratingInput.value) : null,
+        watchedDate: watchedDateInput.value ? new Date(watchedDateInput.value).toISOString() : null,
+        posterUrl: posterUrlInput.value || null,
+        externalId: externalIdInput.value || null
+    }
+
+    try {
+        const response = await fetch('/data', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}))
+            console.error('Save failed', err)
+            alert('Failed to save movie')
             return
         }
-
-        // Represent the FormData entries as a JSON object
-        // This gives a baseline representation with all values as strings
-        const formData = new FormData(myForm)
-        const json = Object.fromEntries(formData)
-
-        // Now let's improve the data by handling checkboxes dates, and numbers 
-        // more explicitly to prepare the data for storage  
-        event.target
-            .querySelectorAll('input')
-            .forEach(el => {
-                // Represent checkboxes as a Boolean value (true/false) 
-                // NOTE: By default, unchecked checkboxes are excluded 
-                if (el.type == 'checkbox') {
-                    json[el.name] = el.checked ? true : false
-                }
-                // Represent number and range inputs as actual numbers
-                else if (el.type == 'number' || el.type == 'range') {
-                    if (json[el.name] && json[el.name].trim() !== '') {
-                        json[el.name] = Number(json[el.name])
-                    }
-                    else {
-                        json[el.name] = null
-                    }
-                }
-                // Represent all date inputs in ISO-8601 DateTime format
-                // NOTE: this makes the date compatible for storage 
-                else if (el.type == 'date') {
-                    if (json[el.name] && json[el.name].trim() !== '') {
-                        json[el.name] = new Date(json[el.name]).toISOString()
-                    }
-                    else {
-                        json[el.name] = null
-                    }
-                }
-            })
-
-
-        console.log(json)
-        // pass the json along to be saved.
-        createItem(json)
+        const result = await response.json()
+        console.log('Saved', result)
+        alert('Movie saved')
+        myForm.reset()
+        posterPreview.src = ''
+        getData()
+    } catch (err) {
+        console.error(err)
+        alert('Failed to save movie')
     }
 })
 
 
-// Given some JSON data, send the data to the API
-// NOTE: "async" makes it possible to use "await" 
-// See also: https://mdn.io/Statements/async_function
-const createItem = async (myData) => {
-    // The save operation is nested in a Try/Catch statement
-    // See also: https://mdn.io/Statements/try...catch
-    try {
-        // Let's send the data to the /item endpoint
-        // we'll add the data to the body of the request. 
-        // https://mdn.io/Fetch_API/Using_Fetch#body
-
-        // We will use the POST method to signal that we want to create a new item
-        // Let's also add headers to tell the server we're sending JSON
-        // The data is sent in serialized form (via JSON.stringify) 
-
-        const response = await fetch('/data', {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(myData)
-        })
-        // Check if the response status is OK 
-        if (!response.ok) {
-            try {
-                console.error(await response.json())
-            }
-            catch (err) {
-                console.error(response.statusText)
-            }
-            throw new Error(response.statusText)
-        }
-        // If all goes well we will recieve back the submitted data
-        // along with a new _id field added by MongoDB
-        const result = await response.json()
-        alert('Data Sent to MongoDB via API. Details are in the console. To see all persisted data, visit the /data endpoint in another tab.');
-        // log the result 
-        console.log(result)
-        // refresh the data list
-        getData()
-    }
-    catch (err) {
-        // Log any errors
-        console.error(err)
-    }
-} // end of save function
-
-
 // fetch items from API endpoint and populate the content div
 const getData = async () => {
-    const response = await fetch('/data')
-    if (response.ok) {
-        readyStatus.style.display = 'block'
-        const data = await response.json()
-        console.log(data)
-        if (data.length == 0) {
-            contentArea.innerHTML += '<p><i>No data found in the database.</i></p>'
+    try {
+        const response = await fetch('/data')
+        if (!response.ok) {
+            notReadyStatus.style.display = 'block'
             return
         }
-        else {
-            contentArea.innerHTML = '<h2>🐈 Noteworthy Cats</h2>'
-            data.forEach(item => {
-                let div = document.createElement('div')
-                div.innerHTML = `<h3>${item.name}</h3>
-            <p>${item.microchip || '<i>No Microchip Found</i>'}</p>
-            <p>${item.description || '<i>No Description Found</i>'}</p>
-            `
-                contentArea.appendChild(div)
-            })
+        readyStatus.style.display = 'block'
+        const data = await response.json()
+        contentArea.innerHTML = ''
+        if (!data || data.length === 0) {
+            contentArea.innerHTML = '<p><i>No movies logged yet.</i></p>'
+            return
         }
+        const header = document.createElement('h2')
+        header.textContent = '🎬 Logged Movies'
+        contentArea.appendChild(header)
 
-    }
-    else {
-
+        data.forEach(item => {
+            const div = document.createElement('div')
+            div.className = 'movie-item'
+            const poster = item.posterUrl ? `<img class="thumb" src="${item.posterUrl}" alt="poster" />` : ''
+            const watched = item.watchedDate ? new Date(item.watchedDate).toLocaleDateString() : 'Unknown'
+            const rating = item.rating != null ? item.rating : '—'
+            div.innerHTML = `
+                <div class="movie-row">
+                  ${poster}
+                  <div class="movie-meta">
+                    <h3>${item.title}</h3>
+                    <p>Rating: ${rating}</p>
+                    <p>Watched: ${watched}</p>
+                  </div>
+                </div>
+            `
+            contentArea.appendChild(div)
+        })
+    } catch (err) {
+        console.error('Failed to fetch movies', err)
         notReadyStatus.style.display = 'block'
-
     }
-
 }
 
 getData()
