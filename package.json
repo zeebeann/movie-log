@@ -5,13 +5,17 @@
   "main": "server.js",
   "scripts": {
     "setup": "npm install",
-    "start": "node --watch --env-file=.env server.js",
+    "build": "prisma generate",
+    "start": "node server.js",
     "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@prisma/client": "^6.18.0",
     "express": "^5.1.0"
