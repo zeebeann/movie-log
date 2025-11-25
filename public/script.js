@@ -297,7 +297,17 @@ const getData = async () => {
                                 const div = document.createElement('div')
                                 div.className = 'movie-item'
                                 const poster = item.posterUrl ? `<img class="thumb" src="${item.posterUrl}" alt="poster" />` : ''
-                                const watched = item.watchedDate ? new Date(item.watchedDate).toLocaleDateString() : 'Unknown'
+                                // format watchedDate as DD/MM/YYYY (Canadian day/month/year ordering)
+                                const formatCanadianDate = (val) => {
+                                    if (!val) return 'Unknown'
+                                    const d = new Date(val)
+                                    if (Number.isNaN(d.getTime())) return 'Unknown'
+                                    const dd = String(d.getDate()).padStart(2, '0')
+                                    const mm = String(d.getMonth() + 1).padStart(2, '0')
+                                    const yyyy = d.getFullYear()
+                                    return `${dd}/${mm}/${yyyy}`
+                                }
+                                const watched = formatCanadianDate(item.watchedDate)
                                 const rating = item.rating != null ? item.rating : null
                                 div.innerHTML = `
                                     <div class="holes-top" aria-hidden="true"></div>
