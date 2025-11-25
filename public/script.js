@@ -307,7 +307,7 @@ const getData = async () => {
                                             <p>Rating: ${buildStarsHtml(rating)} ${rating != null ? `<span style=\"color:#333; font-size:0.95rem; margin-left:0.5rem\">${rating}</span>` : ''}</p>
                                             <p>Watched: ${watched}</p>
                                         </div>
-                                        <div class="holes-lower" aria-hidden="true"></div>
+                                        <div class="holes-lower" aria-hidden="true"><span class="holes-line" aria-hidden="true"></span></div>
                                 `
                                 grid.appendChild(div)
                 })
