@@ -310,7 +310,7 @@ option {
 /* Poster preview on the form */
 .poster-wrap {
     width: 160px;
-    height: 400px;
+    height: 240px;
     background: #f6f6f6;
     display: flex;
     align-items: center;
@@ -346,12 +346,12 @@ option {
 .movie-item {
     background: #fff;
     position: relative; 
-    padding: 2rem;
+    padding: 3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
-    min-height: 300px;
+    gap: 2.5rem;
+    min-height: 350px;
 }
 
 /* Ticket CSS from https://codepen.io/ajskelton/pen/NdrjBm */
@@ -406,7 +406,7 @@ option {
     width: 100%;
     height: 220px;
     object-fit: cover;
-    border-radius: 0.5rem;
+    border-radius: 0.1rem;
     border: 1px solid #ddd;
 }
 
