@@ -406,7 +406,7 @@ option {
 /* dashed connector line between the lower hole circles */
 .holes-lower .holes-line {
     position: absolute;
-    top: calc(var(--circle-size) / -2 + 508px);
+    top: calc(var(--circle-size) / -2 + 507px);
     left: calc(var(--circle-size) * -3.9 + 6px);
     right: calc(var(--circle-size) * -3.9 + 6px);
     border-top: 1.5px dashed #000000;
@@ -432,7 +432,6 @@ option {
 
 .movie-meta {
     padding-bottom: 15px;
-    background-color: #666;
 }
 
 /* Range slider doesn't need padding on the sides */
