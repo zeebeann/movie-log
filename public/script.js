@@ -304,7 +304,7 @@ const getData = async () => {
                                     ${poster}
                                         <div class="movie-meta">
                                             <h3>${item.title}</h3>
-                                            <p>Rating: ${buildStarsHtml(rating)} ${rating != null ? `<span style=\"color:#333; font-size:0.95rem; margin-left:0.5rem\">${rating}</span>` : ''}</p>
+                                            <p>Rating: ${buildStarsHtml(rating)} ${rating != null ? '' : ''}</p>
                                             <p>Watched: ${watched}</p>
                                         </div>
                                         <div class="holes-lower" aria-hidden="true"><span class="holes-line" aria-hidden="true"></span></div>
