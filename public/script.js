@@ -308,11 +308,33 @@ const getData = async () => {
                                             <p>Watched: ${watched}</p>
                                         </div>
                                         <div class="holes-lower" aria-hidden="true"><span class="holes-line" aria-hidden="true"></span></div>
+                                        <button class="delete-movie" data-id="${item.id}" aria-label="Delete movie">Delete</button>
                                 `
                                 grid.appendChild(div)
                 })
 
                 contentArea.appendChild(grid)
+
+                // add delete button handlers
+                grid.querySelectorAll('.delete-movie').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = btn.getAttribute('data-id')
+                        // non-blocking delete, show flash message on success/failure
+                        try {
+                            const resp = await fetch(`/data/${id}`, { method: 'DELETE' })
+                            if (resp.ok) {
+                                showFlash('Movie deleted', 'success')
+                                getData()
+                            } else {
+                                showFlash('Failed to delete movie', 'error')
+                                console.error('delete failed', resp.status)
+                            }
+                        } catch (err) {
+                            console.error('delete error', err)
+                            showFlash('Failed to delete movie', 'error')
+                        }
+                    })
+                })
 
     } catch (err) {
         console.error('Failed to fetch movies', err)
