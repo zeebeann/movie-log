@@ -113,6 +113,7 @@ button.save {
 
 button.save:hover {
     background-color: rgb(129, 0, 0);
+    transition: ease 150ms;
 }
 
 button.reset {
@@ -121,13 +122,14 @@ button.reset {
 
 button.reset:hover {
     background: rgb(101, 101, 101);
+    transition: ease 150ms;
 }
 
 
 /* Main form panel — visually separate form area from movie list */
 main {
     margin: 0 10vw;
-    max-width: 50rem;
+    max-width: 60rem;
     margin-bottom: 2rem;
     background: rgba(255, 255, 255, 0.941);
     padding: 1.5rem;
@@ -438,16 +440,16 @@ option {
         align-self: center;
         padding: 0.45rem 0.8rem;
         border-radius: 0.5rem;
-        border: 1px solid #c62828;
-        background: #fff6f6;
-        color: #b00020;
+        background: rgb(179, 0, 0);
+        color: #ffffff;
         cursor: pointer;
         font-weight: 400;
         font-family: Staatliches, sans-serif;
         font-size: 1.2rem;
     }
     .movie-item .delete-movie:hover {
-        background: #ffecec;
+        background-color: rgb(129, 0, 0);
+        transition: ease 150ms;
     }
 
 .movie-item .thumb {
@@ -464,6 +466,7 @@ option {
     font-size: 1.7rem;
     line-height: 1.6rem;
     font-family: Staatliches, sans-serif;
+    padding: 5px;
 }
 
 .movie-meta p { 
