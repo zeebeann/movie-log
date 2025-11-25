@@ -18,7 +18,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: lightgreen
+    background-color: rgb(0, 0, 0)
 }
 
 
@@ -374,7 +374,7 @@ option {
     position: absolute;
     width: var(--circle-size);
     height: var(--circle-size);
-    background-color: rgb(238, 144, 144);
+    background-color: rgb(0, 0, 0);
     border-radius: 50%;
     top: 0;
 }
@@ -395,7 +395,7 @@ option {
     position: absolute;
     width: var(--circle-size);
     height: var(--circle-size);
-    background-color: rgb(238, 144, 144);
+    background-color: rgb(0, 0, 0);
     border-radius: 50%;
     top: calc(var(--circle-size) / -2 + 485px);
     z-index: 1;
@@ -406,7 +406,7 @@ option {
 /* dashed connector line between the lower hole circles */
 .holes-lower .holes-line {
     position: absolute;
-    top: calc(var(--circle-size) / -2 + 510px);
+    top: calc(var(--circle-size) / -2 + 508px);
     left: calc(var(--circle-size) * -3.9 + 6px);
     right: calc(var(--circle-size) * -3.9 + 6px);
     border-top: 1.5px dashed #000000;
