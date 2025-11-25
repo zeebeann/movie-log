@@ -163,6 +163,24 @@ form {
     gap: 1.5rem;
 }
 
+.form-grid {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.poster-column { width: 100%; display:flex; justify-content:center; }
+.meta-column { width: 100%; }
+
+@media (min-width: 700px) {
+    .form-grid { flex-direction: row; align-items: flex-start; }
+    .poster-column { flex: 0 0 200px; }
+    .meta-column { flex: 1; }
+    .poster-wrap { width: 200px; height: 280px; }
+}
+
 fieldset {
     display: flex;
     flex-direction: column;

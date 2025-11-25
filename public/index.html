@@ -44,64 +44,70 @@
     <p>Log and rate a movie you watched.</p>
 
     <form id="myForm">
-      <fieldset>
-        <label for="title">Movie Title</label>
-        <div class="autocomplete">
-          <input
-            required
-            type="text"
-            name="title"
-            id="title"
-            placeholder="e.g. The Matrix"
-            autocomplete="off"
-          />
-          <small class="validation">Title is required</small>
-          <small id="searchStatus" class="search-status" aria-live="polite"></small>
-          <ul id="suggestions" class="suggestions" aria-label="Search suggestions"></ul>
+      <div class="form-grid">
+        <div class="poster-column">
+          <fieldset>
+            <label for="posterPreview">Poster</label>
+            <div class="poster-wrap">
+              <img id="posterPreview" alt="poster preview" src="" />
+            </div>
+            <input type="hidden" id="posterUrl" name="posterUrl" />
+            <input type="hidden" id="externalId" name="externalId" />
+          </fieldset>
         </div>
-      </fieldset>
 
-      <fieldset>
-        <label for="posterPreview">Poster</label>
-        <div class="poster-wrap">
-          <img id="posterPreview" alt="poster preview" src="" />
+        <div class="meta-column">
+          <fieldset>
+            <label for="title">Movie Title</label>
+            <div class="autocomplete">
+              <input
+                required
+                type="text"
+                name="title"
+                id="title"
+                placeholder="e.g. The Matrix"
+                autocomplete="off"
+              />
+              <small class="validation">Title is required</small>
+              <small id="searchStatus" class="search-status" aria-live="polite"></small>
+              <ul id="suggestions" class="suggestions" aria-label="Search suggestions"></ul>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <label for="rating">Your Rating</label>
+            <div class="rating-stars" role="radiogroup" aria-label="Rate movie out of five stars">
+              <input type="radio" id="rating-5" name="rating" value="5" required />
+              <label for="rating-5" title="5 stars">★</label>
+              <input type="radio" id="rating-4" name="rating" value="4" />
+              <label for="rating-4" title="4 stars">★</label>
+              <input type="radio" id="rating-3" name="rating" value="3" />
+              <label for="rating-3" title="3 stars">★</label>
+              <input type="radio" id="rating-2" name="rating" value="2" />
+              <label for="rating-2" title="2 stars">★</label>
+              <input type="radio" id="rating-1" name="rating" value="1" />
+              <label for="rating-1" title="1 star">★</label>
+            </div>
+            <small class="validation" id="ratingValidation">Please choose a rating</small>
+          </fieldset>
+
+          <fieldset>
+            <label for="watchedDate">Watched Date</label>
+            <input
+              type="date"
+              name="watchedDate"
+              id="watchedDate"
+              required
+            />
+            <small class="validation" id="watchedValidation">Watched date is required</small>
+          </fieldset>
+
+          <fieldset>
+            <button class="save">Save</button>
+            <button class="reset">Reset</button>
+          </fieldset>
         </div>
-        <input type="hidden" id="posterUrl" name="posterUrl" />
-        <input type="hidden" id="externalId" name="externalId" />
-      </fieldset>
-
-      <fieldset>
-        <label for="rating">Your Rating</label>
-        <div class="rating-stars" role="radiogroup" aria-label="Rate movie out of five stars">
-          <input type="radio" id="rating-5" name="rating" value="5" required />
-          <label for="rating-5" title="5 stars">★</label>
-          <input type="radio" id="rating-4" name="rating" value="4" />
-          <label for="rating-4" title="4 stars">★</label>
-          <input type="radio" id="rating-3" name="rating" value="3" />
-          <label for="rating-3" title="3 stars">★</label>
-          <input type="radio" id="rating-2" name="rating" value="2" />
-          <label for="rating-2" title="2 stars">★</label>
-          <input type="radio" id="rating-1" name="rating" value="1" />
-          <label for="rating-1" title="1 star">★</label>
-        </div>
-        <small class="validation" id="ratingValidation">Please choose a rating</small>
-      </fieldset>
-
-      <fieldset>
-        <label for="watchedDate">Watched Date</label>
-        <input
-          type="date"
-          name="watchedDate"
-          id="watchedDate"
-          required
-        />
-        <small class="validation" id="watchedValidation">Watched date is required</small>
-      </fieldset>
-
-      <fieldset>
-        <button class="save">Save</button>
-        <button class="reset">Reset</button>
-      </fieldset>
+      </div>
     </form>
 
 
