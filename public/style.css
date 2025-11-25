@@ -103,7 +103,7 @@ button.save {
 }
 
 button.save:hover {
-    background-color: rgb(3, 103, 3);
+    background-color: rgb(129, 0, 0);
 }
 
 button.reset {
