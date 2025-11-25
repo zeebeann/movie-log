@@ -398,6 +398,7 @@ option {
     background-color: rgb(238, 144, 144);
     border-radius: 50%;
     top: calc(var(--circle-size) / -2 + 485px);
+    z-index: 1;
 }
 .holes-lower::before { left: calc(var(--circle-size) * -3.9); }
 .holes-lower::after { right: calc(var(--circle-size) * -3.9); }
@@ -409,7 +410,7 @@ option {
     left: calc(var(--circle-size) * -3.9 + 6px);
     right: calc(var(--circle-size) * -3.9 + 6px);
     border-top: 1.5px dashed #000000;
-    z-index: -1;
+    z-index: -0;
 }
 
 .movie-item .thumb {
