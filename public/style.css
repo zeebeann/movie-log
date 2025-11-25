@@ -397,7 +397,7 @@ option {
     height: var(--circle-size);
     background-color: rgb(238, 144, 144);
     border-radius: 50%;
-    top: calc(var(--circle-size) / -2 + 470px);
+    top: calc(var(--circle-size) / -2 + 430px);
 }
 .holes-lower::before { left: calc(var(--circle-size) * -3.9); }
 .holes-lower::after { right: calc(var(--circle-size) * -3.9); }
@@ -405,10 +405,10 @@ option {
 /* dashed connector line between the lower hole circles */
 .holes-lower .holes-line {
     position: absolute;
-    top: calc(var(--circle-size) / -2 - 300px);
+    top: calc(var(--circle-size) / -2 + 300px);
     left: calc(var(--circle-size) * -3.9 + 6px);
     right: calc(var(--circle-size) * -3.9 + 6px);
-    border-top: 1px dashed #aaa;
+    border-top: 2px dashed #000000;
     z-index: 1;
 }
 
