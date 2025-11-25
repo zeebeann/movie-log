@@ -247,10 +247,10 @@ option {
 /* Autocomplete suggestions */
 #suggestions {
     width: 100%;
-    margin: 0.15rem 0 0 0;
+    margin: 0.11rem 0 0 0;
     padding: 0;
     list-style: none;
-    border-radius: 0.25rem;
+    border-radius: 0.3rem;
     overflow: hidden;
     max-height: 16rem;
     overflow-y: auto;
@@ -261,7 +261,7 @@ option {
     position: absolute; /* overlay rather than push layout */
     left: 0;
     right: 0;
-    top: calc(100% + 4px);
+    top: calc(100% + 1px);
     z-index: 1200;
 }
 
