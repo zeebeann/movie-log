@@ -29,7 +29,7 @@ body {
 h1{
     font-family: "Staatliches", sans-serif;
     font-weight: 400;
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin: auto;
 }
 
@@ -127,10 +127,10 @@ button.reset:hover {
 /* Main form panel — visually separate form area from movie list */
 main {
     margin: 0 10vw;
-    max-width: 60rem;
-    margin-bottom: 4rem;
+    max-width: 50rem;
+    margin-bottom: 2rem;
     background: rgba(255, 255, 255, 0.941);
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 1rem;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     display: flex;
@@ -462,7 +462,7 @@ option {
 .movie-meta h3 {
     margin: 0;
     font-size: 1.7rem;
-    line-height: 1.8rem;
+    line-height: 1.6rem;
     font-family: Staatliches, sans-serif;
 }
 
