@@ -397,7 +397,7 @@ option {
     height: var(--circle-size);
     background-color: rgb(238, 144, 144);
     border-radius: 50%;
-    top: calc(var(--circle-size) / -2 - 6px);
+    top: calc(var(--circle-size) / -2 + 100px);
 }
 .holes-lower::before { left: calc(var(--circle-size) * -3.9); }
 .holes-lower::after { right: calc(var(--circle-size) * -3.9); }
