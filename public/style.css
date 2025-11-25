@@ -459,6 +459,7 @@ option {
     border: 1px solid #ddd;
     outline: #c62828 1.5px solid;
     outline-offset: 2px;
+    padding: 3px;
 }
 
 .movie-meta h3 {
