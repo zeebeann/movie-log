@@ -248,9 +248,6 @@ const getData = async () => {
             contentArea.innerHTML = '<p><i>No movies logged yet.</i></p>'
             return
         }
-                const header = document.createElement('h2')
-                header.textContent = '🎬 Logged Movies'
-                contentArea.appendChild(header)
 
                 // create a responsive grid container for movie cards
                 const grid = document.createElement('div')

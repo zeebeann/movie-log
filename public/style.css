@@ -129,15 +129,28 @@ button.reset:hover {
 }
 
 
-main,
+/* Main form panel — visually separate form area from movie list */
+main {
+    margin: 0 10vw;
+    max-width: 60rem;
+    margin-bottom: 4rem;
+    background: rgba(255,255,255,0.95);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Content area for logged movies should not have the white panel background */
 #content {
     margin: 0 10vw;
     max-width: 60rem;
     margin-bottom: 4rem;
     background: none;
-    padding: 2rem;
-    border-radius: 1rem;
-    filter: drop-shadow(0 0 1rem #ccc);
+    padding: 1rem 0 2rem 0; /* keep spacing but no panel */
+    border-radius: 0;
+    filter: none;
     display: flex;
     flex-direction: column;
 }
