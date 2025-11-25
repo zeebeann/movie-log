@@ -15,6 +15,22 @@ let ratingRadios = Array.from(document.querySelectorAll('input[name="rating"]'))
 let watchedDateInput = document.querySelector('#watchedDate')
 let ratingValidation = document.querySelector('#ratingValidation')
 let watchedValidation = document.querySelector('#watchedValidation')
+let flashMessage = document.querySelector('#flashMessage')
+let flashTimer = null
+
+// show a small non-blocking flash message (success | error)
+const showFlash = (msg, type = 'success', ms = 3000) => {
+    if (!flashMessage) return
+    flashMessage.textContent = msg
+    flashMessage.className = `flash-message ${type}`
+    flashMessage.style.display = 'block'
+    if (flashTimer) clearTimeout(flashTimer)
+    flashTimer = setTimeout(() => {
+        flashMessage.style.display = 'none'
+        flashMessage.className = 'flash-message'
+        flashMessage.textContent = ''
+    }, ms)
+}
 
 // Debounce helper
 const debounce = (fn, wait = 250) => {
@@ -135,6 +151,12 @@ titleInput.addEventListener('keydown', (e) => {
     }
 })
 
+// hide title validation when user starts typing
+titleInput.addEventListener('input', () => {
+    const titleValidation = titleInput.nextElementSibling
+    if (titleValidation && titleValidation.classList.contains('validation')) titleValidation.style.display = 'none'
+})
+
 // Hide suggestions whenever user clicks outside the input/suggestions
 document.addEventListener('click', (e) => {
     if (!titleInput.contains(e.target) && !suggestions.contains(e.target)) {
@@ -157,7 +179,10 @@ myForm.addEventListener('submit', async (event) => {
 
     // client-side validation
     if (!titleInput.value || titleInput.value.trim() === '') {
-        alert('Title is required')
+        // reveal the inline validation message next to the title input
+        const titleValidation = titleInput.nextElementSibling
+        if (titleValidation && titleValidation.classList.contains('validation')) titleValidation.style.display = 'block'
+        titleInput.focus()
         return
     }
     const selRadio = document.querySelector('input[name="rating"]:checked')
@@ -213,12 +238,12 @@ myForm.addEventListener('submit', async (event) => {
         if (!response.ok) {
             const err = await response.json().catch(() => ({}))
             console.error('Save failed', err)
-            alert('Failed to save movie')
+            showFlash('Failed to save movie', 'error')
             return
         }
         const result = await response.json()
         console.log('Saved', result)
-        alert('Movie saved')
+        showFlash('Movie saved', 'success')
         myForm.reset()
         // ensure radio buttons are cleared after reset
         ratingRadios.forEach(r => r.checked = false)
@@ -228,7 +253,7 @@ myForm.addEventListener('submit', async (event) => {
         getData()
     } catch (err) {
         console.error(err)
-        alert('Failed to save movie')
+        showFlash('Failed to save movie', 'error')
     }
 })
 
@@ -294,46 +319,6 @@ const getData = async () => {
 }
 
 getData()
-
-// Intercept form submit to handle edit vs. create
-myForm.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const formData = new FormData(myForm)
-    const data = Object.fromEntries(formData.entries())
-    const rating = ratingRadios.find(r => r.checked)?.value
-    if (!rating) {
-        ratingValidation.style.display = 'block'
-        return
-    }
-    data.rating = Number(rating)
-    // watchedDate required
-    if (!watchedDateInput.value) {
-        watchedValidation.style.display = 'block'
-        return
-    }
-    data.watchedDate = watchedDateInput.value
-
-    const editId = myForm.getAttribute('data-edit-id')
-    let url = '/api/data'
-    let method = 'POST'
-    if (editId) {
-        url = `/api/data/${editId}`
-        method = 'PUT'
-    }
-    const resp = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    if (resp.ok) {
-        myForm.reset()
-        myForm.removeAttribute('data-edit-id')
-        posterPreview.src = ''
-        getData()
-    } else {
-        alert('Failed to save movie')
-    }
-})
 
 // Reset form clears edit mode
 myForm.querySelector('.reset').addEventListener('click', (e) => {

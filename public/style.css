@@ -415,6 +415,22 @@ input[type=color] {
     margin-top: 0.25rem;
 }
 
+/* small non-blocking flash message for saves / errors */
+.flash-message {
+    display: none; /* toggled by JS */
+    max-width: 60rem;
+    margin: 0 auto 1rem auto;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    color: #fff;
+    text-align: center;
+}
+.flash-message.success { background: linear-gradient(90deg,#2e7d32,#66bb6a); }
+.flash-message.error { background: linear-gradient(90deg,#c62828,#ff6b6b); }
+
 /* Invalid input styling - only show after user interaction */
 input:user-invalid,
 select:user-invalid,
