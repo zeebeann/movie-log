@@ -300,12 +300,14 @@ const getData = async () => {
                                 const watched = item.watchedDate ? new Date(item.watchedDate).toLocaleDateString() : 'Unknown'
                                 const rating = item.rating != null ? item.rating : null
                                 div.innerHTML = `
-                                        ${poster}
+                                    <div class="holes-top" aria-hidden="true"></div>
+                                    ${poster}
                                         <div class="movie-meta">
                                             <h3>${item.title}</h3>
                                             <p>Rating: ${buildStarsHtml(rating)} ${rating != null ? `<span style=\"color:#333; font-size:0.95rem; margin-left:0.5rem\">${rating}</span>` : ''}</p>
                                             <p>Watched: ${watched}</p>
                                         </div>
+                                        <div class="holes-lower" aria-hidden="true"></div>
                                 `
                                 grid.appendChild(div)
                 })

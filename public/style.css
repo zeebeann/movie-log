@@ -4,30 +4,7 @@
     gap: 0.5rem;
     margin-top: 0.5rem;
 }
-.movie-actions button {
-    padding: 0.3rem 0.9rem;
-    border-radius: 0.4rem;
-    border: 1px solid #bbb;
-    background: #f7f7f7;
-    color: #333;
-    font-size: 0.98rem;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-}
-.movie-actions button.edit-movie {
-    border-color: #1976d2;
-    color: #1976d2;
-}
-.movie-actions button.edit-movie:hover {
-    background: #e3f0fa;
-}
-.movie-actions button.delete-movie {
-    border-color: #d32f2f;
-    color: #d32f2f;
-}
-.movie-actions button.delete-movie:hover {
-    background: #fdeaea;
-}
+
 body {
 
     height: 100%;
@@ -368,15 +345,64 @@ option {
 
 .movie-item {
     background: #fff;
+    position: relative; /* enable absolute-placement of decorative holes */
     border-radius: 0.75rem;
-    border: 1px solid #efefef;
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 0.75rem;
-    min-height: 220px;
+    min-height: 450px;
 }
+
+/* Ticket CSS from https://codepen.io/ajskelton/pen/NdrjBm */
+.holes-top {
+    --circle-size: 18px;
+    --spread: 44px; 
+    position: absolute;
+    top: calc(var(--circle-size) / -2);
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--circle-size);
+    height: var(--circle-size);
+    background-color: rgb(238, 144, 144); 
+    border-radius: 50%;
+    z-index: 2;
+}
+.holes-top::before,
+.holes-top::after {
+    content: '';
+    position: absolute;
+    width: var(--circle-size);
+    height: var(--circle-size);
+    background-color: lightgreen;
+    border-radius: 50%;
+    top: 0;
+}
+.holes-top::before { left: calc(var(--spread) * -1); }
+.holes-top::after { left: var(--spread); }
+
+.holes-lower {
+    --circle-size: 18px;
+    position: relative;
+    margin: 18px 0 0 0;
+    padding: 0.5rem;
+    border: 1px dashed #aaa;
+    border-radius: 0.5rem;
+    background: transparent;
+}
+.holes-lower::before,
+.holes-lower::after {
+    content: '';
+    position: absolute;
+    width: var(--circle-size);
+    height: var(--circle-size);
+    background-color: lightgreen;
+    border-radius: 50%;
+    top: calc(var(--circle-size) / -2 - 6px);
+}
+.holes-lower::before { left: calc(var(--circle-size) * -0.9); }
+.holes-lower::after { right: calc(var(--circle-size) * -0.9); }
 
 .movie-item .thumb {
     width: 100%;
