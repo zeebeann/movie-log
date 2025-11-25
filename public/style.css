@@ -134,7 +134,7 @@ main,
     margin: 0 10vw;
     max-width: 60rem;
     margin-bottom: 4rem;
-    background: white;
+    background: none;
     padding: 2rem;
     border-radius: 1rem;
     filter: drop-shadow(0 0 1rem #ccc);

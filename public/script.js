@@ -281,12 +281,8 @@ const getData = async () => {
                                         ${poster}
                                         <div class="movie-meta">
                                             <h3>${item.title}</h3>
-                                            <p>Rating: ${buildStarsHtml(rating)} ${rating != null ? `<span style="color:#333; font-size:0.95rem; margin-left:0.5rem">${rating}</span>` : ''}</p>
+                                            <p>Rating: ${buildStarsHtml(rating)} ${rating != null ? `<span style=\"color:#333; font-size:0.95rem; margin-left:0.5rem\">${rating}</span>` : ''}</p>
                                             <p>Watched: ${watched}</p>
-                                        </div>
-                                        <div class="movie-actions">
-                                        <button class="edit-movie" data-id="${item.id}" title="Edit"><span class="material-symbols-outlined">edit</span></button>
-                                        <button class="delete-movie" data-id="${item.id}" title="Delete"><span class="material-symbols-outlined">delete</span></button>
                                         </div>
                                 `
                                 grid.appendChild(div)
@@ -294,41 +290,6 @@ const getData = async () => {
 
                 contentArea.appendChild(grid)
 
-                // Add event listeners for edit and delete buttons
-                grid.querySelectorAll('.delete-movie').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const id = btn.getAttribute('data-id')
-                        if (confirm('Are you sure you want to delete this movie?')) {
-                            const resp = await fetch(`/api/data/${id}`, { method: 'DELETE' })
-                            if (resp.ok) {
-                                getData()
-                            } else {
-                                alert('Failed to delete movie')
-                            }
-                        }
-                    })
-                })
-
-                grid.querySelectorAll('.edit-movie').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = btn.getAttribute('data-id')
-                        // Find the movie data
-                        const movie = data.find(m => m.id === id)
-                        if (!movie) return
-                        // Fill the form with movie data for editing
-                        titleInput.value = movie.title || ''
-                        posterUrlInput.value = movie.posterUrl || ''
-                        externalIdInput.value = movie.externalId || ''
-                        posterPreview.src = movie.posterUrl || ''
-                        watchedDateInput.value = movie.watchedDate ? new Date(movie.watchedDate).toISOString().slice(0,10) : ''
-                        if (movie.rating) {
-                            const radio = ratingRadios.find(r => r.value == movie.rating)
-                            if (radio) radio.checked = true
-                        }
-                        myForm.setAttribute('data-edit-id', id)
-                        window.scrollTo({ top: 0, behavior: 'smooth' })
-                    })
-                })
     } catch (err) {
         console.error('Failed to fetch movies', err)
         notReadyStatus.style.display = 'block'
