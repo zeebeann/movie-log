@@ -11,7 +11,7 @@ body {
     width: 100%;
     margin: 0;
     text-align: center;
-    font-family: Inter;
+    font-family: Inter, sans-serif;
     font-style: normal;
     display: flex;
     flex-direction: column;
@@ -96,7 +96,8 @@ header .intro {
 
 button {
     border: 0;
-    font-weight: 700;
+    font-weight: 400;
+    font-size: 1.5rem;
     padding: 0.5rem 1rem;
     border-radius: 1rem;
     color: white;
@@ -440,9 +441,9 @@ option {
         background: #fff6f6;
         color: #b00020;
         cursor: pointer;
-        font-weight: 700;
+        font-weight: 400;
         font-family: Staatliches, sans-serif;
-        text-transform: uppercase;
+        font-size: 1.5rem;
     }
     .movie-item .delete-movie:hover {
         background: #ffecec;
@@ -459,7 +460,7 @@ option {
 
 .movie-meta h3 {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-family: Staatliches, sans-serif;
 }
 
