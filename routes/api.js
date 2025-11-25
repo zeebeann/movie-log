@@ -58,6 +58,19 @@ router.get('/data', async (req, res) => {
     }
 })
 
+// ----- DELETE -----
+// Delete a movie by ID
+router.delete('/data/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        await prisma[model].delete({ where: { id } })
+        res.send({ success: true })
+    } catch (err) {
+        console.error('DELETE /data/:id error:', err)
+        res.status(500).send({ error: 'Failed to delete record', details: err.message || err })
+    }
+})
+
 
 
 // ----- findMany() with search ------- 
