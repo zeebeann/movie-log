@@ -486,3 +486,7 @@ select:user-invalid+.validation,
 textarea:user-invalid+.validation {
     display: block;
 }
+
+footer p {
+    color: #eaeaea;
+}
