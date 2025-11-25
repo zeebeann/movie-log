@@ -94,10 +94,12 @@ button {
     border-radius: 1rem;
     color: white;
     cursor: pointer;
+    font-family: Staatliches, sans-serif;
+    text-transform: uppercase;
 }
 
 button.save {
-    background: rgb(3, 136, 3);
+    background: rgb(179, 0, 0);
 }
 
 button.save:hover {
@@ -432,6 +434,8 @@ option {
         color: #b00020;
         cursor: pointer;
         font-weight: 700;
+        font-family: Staatliches, sans-serif;
+        text-transform: uppercase;
     }
     .movie-item .delete-movie:hover {
         background: #ffecec;
