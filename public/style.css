@@ -346,7 +346,7 @@ option {
 .movie-item {
     background: #fff;
     position: relative; 
-    padding: 3rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -395,12 +395,12 @@ option {
     position: absolute;
     width: var(--circle-size);
     height: var(--circle-size);
-    background-color: lightgreen;
+    background-color: rgb(238, 144, 144);
     border-radius: 50%;
     top: calc(var(--circle-size) / -2 - 6px);
 }
-.holes-lower::before { left: calc(var(--circle-size) * -0.9); }
-.holes-lower::after { right: calc(var(--circle-size) * -0.9); }
+.holes-lower::before { left: calc(var(--circle-size) * -0.1); }
+.holes-lower::after { right: calc(var(--circle-size) * -0.1); }
 
 .movie-item .thumb {
     width: 100%;
