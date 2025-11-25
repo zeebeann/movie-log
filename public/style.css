@@ -383,7 +383,7 @@ option {
 
 .holes-lower {
     --circle-size: 30px;
-    position: relative;
+    position: absolute;
     margin: 18px 0 0 0;
     padding: 0.5rem;
     border-radius: 0.5rem;
@@ -399,8 +399,8 @@ option {
     border-radius: 50%;
     top: calc(var(--circle-size) / -2 - 6px);
 }
-.holes-lower::before { left: calc(var(--circle-size) * -0.1); }
-.holes-lower::after { right: calc(var(--circle-size) * -0.1); }
+.holes-lower::before { left: calc(var(--circle-size) * -3.1); }
+.holes-lower::after { right: calc(var(--circle-size) * -3.1); }
 
 .movie-item .thumb {
     width: 100%;
