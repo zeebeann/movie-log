@@ -456,9 +456,8 @@ option {
     width: 100%;
     height: 355px;
     object-fit: cover;
-    border: 1px solid #ddd;
-    outline: #c62828 1.5px solid;
-    outline-offset: 2px;
+    outline: rgb(179, 0, 0) 1.5px solid;
+    outline-offset: 1px;
     padding: 3px;
 }
 
