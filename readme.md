@@ -1,4 +1,4 @@
-# Movie Log
+# Movie Ticket Log
 
 A simple movie-logging interface that lets users record the films they watch and view them as custom **CSS-styled movie tickets**.
 Built and designed by **Zainab Ilyas** as part of Sheridan College’s *System Design: Databases and Dynamic Data* course.
